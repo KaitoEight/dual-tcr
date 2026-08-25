@@ -62,3 +62,26 @@ v8_*.py
 # PDF drafts
 *_draft*.pdf
 *_official*.pdf
+
+# Experimental and debug files
+experimental/
+outputs/
+persam_*.txt
+export.txt
+response_letter.md
+wget-log*
+
+# Data folders (should be downloaded separately)
+davis2017/
+data/
+fss-1000/
+DAVIS/
+results/
+revision/
+
+# Large model files
+*.pth
+*.pt
+
+# Logs
+*.log
