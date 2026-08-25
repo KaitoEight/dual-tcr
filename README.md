@@ -1,6 +1,5 @@
 # Dual-TCR: Dual-Branch Target Consistency Representation for Training-Free Personalized Segmentation
 
-
 Official implementation of **Dual-TCR: A Dual-Branch Target Consistency Representation for Training-Free Personalized Image Segmentation**.
 
 ## Abstract
@@ -61,8 +60,8 @@ We provide two scoring configurations:
 ### Installation
 
 ```bash
-git clone https://github.com/KaitoEight/Personalize-SAM.git
-cd Personalize-SAM
+git clone https://github.com/KaitoEight/dual-tcr.git
+cd dual-tcr
 
 conda create -n dual_tcr python=3.8
 conda activate dual_tcr
@@ -133,34 +132,22 @@ python eval_miou.py --pred_path outputs/radio_scoring
 | DUAL-space | 92.46 | 50% SAM + 50% RADIO |
 | SAM-space | 92.34 | Decoder-aligned evaluation |
 
-#### τ Parameter Analysis (HRM)
-
-| τ | mIoU (%) |
-|---|----------|
-| 0.00 | 88.13 |
-| **0.01** | **88.19** |
-| 0.02 | 87.97 |
-| 0.05 | 87.93 |
-
 ## Repository Structure
 
 ```
-Personalize-SAM/
+dual-tcr/
 ├── dual_tcr_perseg_radio.py      # RADIO-space scoring (93.42%)
 ├── dual_tcr_perseg_sam.py        # SAM-space scoring (92.43%)
 ├── eval_miou.py                  # mIoU evaluation
 ├── per_segment_anything/          # Modified SAM implementation
 │   ├── predictor.py              # Custom predictor with attn_sim
 │   └── modeling/                # Mask decoder modifications
-├── ablation_experiments/         # Ablation study scripts
+├── ablation_experiments/          # Ablation study scripts
 │   ├── eval_prompt_localization.py
-│   ├── ablation_tau_v7tcr.py
 │   ├── ablation_scoring_space_full.py
 │   └── RevisionLetter            # Response to reviewers
 └── data/                        # PerSeg dataset (download separately)
 ```
-
-
 
 ## Acknowledgements
 
@@ -168,6 +155,17 @@ This work builds upon:
 - [Segment Anything Model (SAM)](https://github.com/facebookresearch/segment-anything)
 - [NVIDIA RADIO](https://github.com/NVlabs/RADIO)
 - [PerSAM](https://github.com/ZrrSkywalker/Personalize-SAM)
+
+## Citation
+
+```bibtex
+@article{dual_tcr_2024,
+  title={Dual-TCR: A Dual-Branch Target Consistency Representation for Training-Free Personalized Image Segmentation},
+  author={Le Minh Khanh and Dong Van Nguyen and others},
+  journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  year={2024}
+}
+```
 
 ## Contact
 
