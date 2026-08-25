@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+*.egg
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs
+*.log
+*.txt.bak
+
+# Data directories (should be downloaded separately)
+data/
+fss-1000/
+DAVIS/
+DAVIS-2017-trainval-480p.zip
+
+# Large model files (download separately)
+*.pth
+*.pth.tar
+*.pt
+sam_vit_h_4b8939.pth
+
+# Temporary files
+*.tmp
+download*
+wget-log*
+*.bak
+temp.py
+checkpoint*
+data1/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Export/debug files
+export.txt
+*.log.txt
+
+# Experimental scripts
+experimental/
+test_*.py
+v8_*.py
+
+# Downloaded files
+"download?id=*"*
+
+# PDF drafts
+*_draft*.pdf
+*_official*.pdf

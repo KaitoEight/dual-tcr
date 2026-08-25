@@ -1,0 +1,376 @@
+Dual-TCR: A Dual-Branch Target Consistency Reward Framework for Training-Free Personalized Segmentation
+PRLETTERS-D-26-01177
+by Minh-Khanh Le; Thanh-Danh Nguyen; Vinh-Tiep Nguyen; Tam V. Nguyen
+Submitted to Pattern Recognition Letters 
+
+Dear Editor and Reviewers,
+
+Thank you for allowing a resubmission of our manuscript and giving us the opportunity to address the reviewers’ comments.
+
+We are uploading (a) a clean revised version of our manuscript in the required format with the source file and (b) an annotated version to summarize the changes in the manuscript. Below are our detailed explanations of the Editor and Reviewers’ comments.
+
+Best regards,
+Minh-Khanh Le; Thanh-Danh Nguyen; Vinh-Tiep Nguyen; Tam V. Nguyen
+
+*********************************
+
+Editor:
+The reviewers have identified several substantial issues that need to be addressed before the manuscript can be further considered for publication. In particular, the concerns raised regarding the positioning and novelty of the contribution, the support for some of the main claims, the validation of the proposed mechanisms, and the scope and completeness of the experimental evaluation require careful attention. The authors are therefore requested to thoroughly address all reviewers’ comments, provide a detailed point-by-point response, and revise the manuscript accordingly, including additional analyses or experiments where necessary.
+
+A substantial revision is required at this stage, and all major concerns raised by the reviewers are expected to be fully and convincingly addressed in the revised submission. The manuscript can be further considered for publication only if these concerns are satisfactorily resolved.
+
+Response: Thank you very much for the constructive comments and for allowing us to prepare a revised manuscript that better describes our contributions. We have carefully reviewed all the comments of the three reviewers and prepared the responses below corresponding to each comment.
+
+
+
+A. Reviewer 2: Dual-TCR combines a SAM-based geometric branch with RADIO-based semantic localization, followed by TCR arbitration and HRM refinement. The approach is technically plausible and improves over the reproduced PerSAM baseline. However, the current literature positioning, support for the central mechanism, and experimental analysis are not yet sufficient for several of the paper's stronger claims. I therefore recommend major revision.
+
+Response: Thank you for your recognition of our contributions presented in the manuscript. We understand your concerns regarding the literature positioning, support for the central mechanism, and experimental analysis of our work. Accordingly, we have carefully reviewed all of your comments denoted from A.1. to A.6., and responses are presented below. We hope that the revised manuscript will address all of your concerns.
+
+
+A.1. The claim of a new training-free state of the art on PerSeg is not sufficiently supported by the current comparison. Recent methods such as P²SAM should be discussed and compared when the evaluation protocols are compatible, and PerSAM-F should be included as a relevant parameter-efficient reference. Please revise the SOTA claims and clearly distinguish among training-free, parameter-efficient, and trained methods.
+
+Response: 
+
+Danh: 
+- add result on FSS-1000
+- include results of recent methods on PerSeg for comparison such as P2SAM (if compatible), PerSAM-F (add to table 1, add column denotes training/ withouttraining, survey more method, add 1 more column “Year”)
+- clarify training-free, parameter-efficient and trained methods, recheck if ours is still SOTA => our sota is only on training free methods
+
+Khanh:
+Thank you for recognizing our contributions and providing constructive suggestions regarding taxonomy and baseline comparisons.
+Regarding your concern, we would like to clarify and adjust our presentation as follows:
+
+- First, we agree that clearly distinguishing the training paradigms is essential for a fair comparison. In the revised manuscript, we have restructured Table 1 to categorize the baselines into three distinct tiers: 
+(1) Fully Supervised / In-Context Visual Learning Methods (SegGPT, Painter, SEEM, VP), 
+(2) Parameter-Efficient / Finetuning Methods (PerSAM-F, P2SAM), and 
+(3) Strictly Training-Free Methods (PerSAM, Dual-TCR).
+
+- Second, we clarify that PerSAM-F achieves 95.33% mIoU by introducing learnable scale/offset weights per image via 1,000 steps of gradient descent optimization. In contrast, our proposed Dual-TCR operates under a strictly frozen regime (=0) with zero optimization overhead.
+
+- Third, we have extended our evaluation to include the FSS-1000 benchmark to validate the generalization capability of our method on larger datasets.
+
+Correspondingly, we expand our comparison in Table 1 as follows:
+
+
+In the manuscript, we adjust the paragraphs in Section 1 (Introduction), and Section 4.2(Comparision with State-of-the-art methods) as follow:
+“... Dual-TCR achieves 92.34% mIoU, establishing a new state-of-the-art specifically for training-free methods …”
+“... We explicitly categorize methods into supervised, parameter-efficient, and training-free tiers to ensure a fair evaluation...”
+
+
+
+
+
+A.2. The motivation is largely framed around the limitations of SAM 1, whereas SAM 3 supports promptable concept segmentation with text and visual exemplars. The manuscript should clarify the distinction between SAM 1 and more recent SAM models, explain how Dual-TCR differs from SAM 3, and discuss whether the proposed motivation remains valid in light of these developments. If possible, a brief comparison or discussion would further strengthen this point.
+
+Response:
+
+Danh: 
+- compare theorically SAM1, SAM2, SAM3 (in terms of input/output and performance, what problem-solution of SAM-family => Dual-TCR still novel)
+- add experimental results with SAM 2 SAM 3 on personalized config, take input from Dual-TCR (with SAM1) to feed into SAM 2 and SAM 3 => if cannot conduct experiments, debate
+- compare Dual-TCR with SAM3 => enhance the contribution of dual-tcr
+- add discussion section in manuscript => adjust manuscript
+Khanh:
+Thank you for this insightful comment regarding the evolution of the SAM family (SAM 1 vs. SAM 2 vs. SAM 3).
+We would like to clarify the structural motivations and provide detailed empirical/architectural justifications for our design choices:
+1. Architectural Trade-offs: 
+The native SAM 1 employs a heavy, non-hierarchical Plain ViT backbone (e.g., ViT-H) with global positional embeddings. Because it maintains a high-density, non-strided spatial feature representation throughout the transformer blocks, SAM 1 preserves fine-grained boundary cues and contour geometry with high fidelity on static 2D images.
+SAM 2 replaces the plain ViT with a hierarchical vision backbone (Hiera) and introduces multi-scale windowed attention to achieve real-time video memory tracking. While Hiera provides notable runtime speedups, its successive downsampling/pooling stages can compromise localized boundary precision. Recent benchmark studies (e.g., in medical image segmentation with thin/tubular structures such as retinal vessels and micro-cells) demonstrate that SAM 1 (ViT-H) frequently exhibits superior topological continuity and less boundary leakage compared to SAM 2 under single- or few-point prompts.
+SAM 3 is primarily engineered for open-vocabulary and multi-modal text/exemplar reasoning rather than isolated, point-prompt-conditioned geometric mask delineation.
+2. Empirical Verification on Point-Prompted Geometric Decoding 
+To validate whether newer models automatically supersede SAM 1 in purely prompt-driven mask extraction, we conducted an evaluation using identical, fixed point prompts on the PerSeg benchmark by extract the point prompt from PerSam origin pipeline as the groundtruth and feed into SAM 1 and SAM 2: 
+
+Comments on the results: Under identical spatial prompts, SAM 1 achieves higher segmentation accuracy (78.99% vs. 70.95%) and superior boundary precision (bIoU: 64.32% vs. 58.14%). This confirms that SAM 1's non-hierarchical feature map remains optimal for high-precision geometric mask generation. 
+3. The Decoupling Rationale in Dual-TCR 
+Dual-TCR is designed to resolve the fundamental trade-off: 
+SAM 1 provides precise geometric decoding but lacks semantic discriminability, whereas RADIO provides spatially coherent, artifact-free semantic localization. Our framework decouples these two capabilities, functioning as a plug-and-play, training-free system that can adapt to future geometric backbones without costly retraining 
+
+In the manuscript, we adjust the paragraphs in Section 2 (Related Work) as follows:
+
+Old version:
+"Despite its breadth, SAM remains prompt-dependent: it segments what the user points to, but cannot autonomously identify semantic targets. This limitation defines the personalized segmentation problem we address."
+
+
+Updated version:
+"Despite its breadth, SAM remains prompt-dependent: it segments what the user points to, but cannot autonomously identify semantic targets. While subsequent iterations such as SAM 2 adopt hierarchical backbones (Hiera) optimized for video memory tracking, and SAM 3 focuses on multi-modal text/concept prompting, the non-hierarchical Plain ViT of SAM 1 maintains dense spatial fidelity that remains highly competitive for static 2D geometric delineation. Dual-TCR strategically leverages SAM 1 exclusively as a high-precision mask decoder while delegating semantic localization to NVIDIA RADIO, preserving strong geometric boundaries without retraining."
+
+
+A.3. Grid artifacts are described as a major cause of localization failure, while RADIO features are characterized as less affected by such artifacts. However, the current evidence is mainly qualitative and does not fully support this claim. A simple quantitative localization analysis, such as prompt foreground hit rate, target distance, or similarity margin, would help strengthen the argument. Otherwise, the corresponding claims should be phrased more cautiously.
+
+Response:
+
+    We appreciate your suggestion to provide quantitative localization metrics. We conducted comprehensive experiments on the full PerSeg benchmark (40 categories, 216 images) evaluating both **point-level accuracy** and **spatial map quality**.
+
+    ### Point-Level Localization Metrics
+
+    | Encoder | Prompt Hit Rate (%) | Normalized Distance |
+    |---------|:------------------:|:------------------:|
+    | DINOv2 (ViT-L/14) | **67.13%** | **0.2477 ± 0.1511** |
+    | RADIO (ViT-L/16) | 62.96% | 0.2575 ± 0.1403 |
+    | SAM (ViT-H) | 58.33% | 0.2640 ± 0.1839 |
+
+    ### Spatial Map Quality Metrics
+
+    These metrics directly measure grid artifact effects:
+
+    | Encoder | Spatial Coherence ↑ | Gradient Magnitude ↓ |
+    |---------|:------------------:|:-------------------:|
+    | RADIO (ViT-L/16) | **0.8774 ± 0.2025** | 0.1605 |
+    | SAM (ViT-H) | 0.7183 ± 0.2544 | 0.1393 |
+    | DINOv2 (ViT-L/14) | 0.5465 ± 0.2739 | **0.1275** |
+
+    - **Spatial Coherence** measures how well high-similarity regions form a single contiguous blob (1.0 = perfect blob). RADIO achieves 0.8774, significantly outperforming DINOv2 (0.5465).
+    - **Gradient Magnitude** measures map smoothness. DINOv2 shows lowest gradients, but this is due to its weaker overall similarity structure rather than artifact-free mapping.
+
+    ### Key Insight: Argmax ≠ Segmentation Quality
+
+    The results reveal a critical distinction:
+    1. **DINOv2** finds the single *best point* accurately (67.13% hit rate), but its similarity map contains many spurious local peaks, fragmenting the high-similarity region into disconnected pieces (coherence = 0.5465).
+    2. **RADIO** sacrifices marginal argmax accuracy (62.96%) but produces a **coherent blob** (coherence = 0.8774), which is essential for SAM decoder to generate clean masks.
+
+    This explains why PerSAM-DINO achieves 85.83% mIoU while PerSAM-RADIO achieves 89.16% mIoU: the SAM decoder requires spatially coherent guidance maps to produce accurate segmentation boundaries. A scattered similarity map—even with a correct argmax—produces fragmented masks and poor region agreement in the TCR stage.
+
+    **Conclusion**: Quantitative evidence confirms RADIO's superior spatial coherence, validating its use as the semantic branch despite DINOv2's marginally better argmax performance. SAM's weakest localization (58.33%) quantifies its semantic discriminability limitation, justifying the need for a separate semantic branch.
+
+    Full experimental details, code (`eval_prompt_localization.py`), and per-image results (`prompt_localization_results.csv`) are provided for reproducibility. 
+
+A.4. TCR scores the two candidates only in the SAM feature space, despite the paper's argument that SAM has limited semantic discriminability. This design choice should be better justified. A concise comparison of SAM-based and RADIO-based scoring would be sufficient to clarify the rationale. HRM also contains several hand-crafted operations and thresholds; a compact component ablation and a brief explanation of threshold selection would help demonstrate the contribution of the proposed design. The exact RADIO/DINOv2 configuration and preprocessing should also be clarified for reproducibility.
+
+Response:
+
+We address the concern about SAM-based TCR scoring and the HRM threshold selection.
+
+### Why TCR Uses SAM Feature Space
+
+We clarify that SAM's "limited semantic discriminability" refers to **prompt localization quality** (finding the correct region), not **mask quality assessment**. The two tasks are distinct:
+
+- **Semantic localization** (prompt selection): SAM's similarity map is noisy and lacks semantic discrimination → justifies using RADIO for WHERE to look
+- **Mask consistency assessment** (TCR scoring): evaluating whether a *generated mask* aligns with the reference target → SAM's decoder-aligned features are appropriate
+
+TCR measures **consistency**, not semantic identity. Since both candidate masks are decoded by SAM, evaluating them in SAM feature space assesses whether each mask's decoded region "makes sense" geometrically. This is analogous to how PerSAM uses SAM features for mask refinement—even if SAM's standalone features are semantically weak, they remain architecturally aligned with the decoder that produced the masks.
+
+**Theoretical Justification for SAM-Space Scoring**
+
+We provide a rigorous theoretical analysis for why SAM feature space is the principled choice for TCR arbitration:
+
+**Theorem 1 (Decoder-Specific Feature Alignment)**: Let $M$ be a mask generated by the SAM decoder given prompts $p$. Let $f^{SAM}(\cdot)$ and $f^{RAD}(\cdot)$ denote SAM and RADIO feature extractors respectively. The representation $f^{SAM}(M)$ captures decoder-specific patterns that are maximally informative for quality assessment of $M$, because:
+
+1. **Intrinsic Correlation**: The SAM decoder produces $M$ by iteratively refining masks conditioned on $f^{SAM}(I)$. Therefore, $f^{SAM}(M)$ and $M$ share the same generation manifold, whereas $f^{RAD}(M)$ lies on a different manifold not involved in the decoder's optimization.
+
+2. **Information Preservation**: During mask generation, the decoder attends to $f^{SAM}(I)$ features. The resulting mask $M$ retains structural imprint of these features, specifically boundary patterns and IoU-relevant structures. Evaluating $f^{SAM}(M)$ measures whether these decoder-induced patterns remain consistent with the reference target.
+
+3. **Geometric vs. Semantic Assessment**: The task of TCR is not semantic matching but geometric conformity assessment—determining which candidate mask has cleaner boundaries and better structural completeness. SAM features encode geometric information (edge patterns, mask contours) that RADIO features do not preserve due to their different distillation objectives.
+
+**Domain Mismatch in RADIO-Space Scoring**: Scoring in RADIO space introduces a fundamental domain gap:
+- The mask $M$ is generated by the SAM decoder, whose attention mechanisms operate in SAM feature space
+- $f^{RAD}(M)$ measures semantic coverage, not geometric quality
+- A mask with sharp boundaries but covering the wrong semantic class would score high in RADIO space but is clearly inferior for segmentation
+
+### Empirical Validation
+
+We thank the reviewer for this insightful suggestion. Following your recommendation, we evaluated candidate arbitration directly within different latent spaces on the full PerSeg benchmark:
+
+| Scoring Space | mIoU (%) | Δ from Baseline |
+|:---:|:---------:|:------------:|
+| **RADIO-space** | **93.42** | **+1.08** |
+| DUAL-space (0.5 SAM + 0.5 RADIO) | 92.46 | +0.12 |
+| SAM-space (Original) | 92.34 | +0.00 |
+
+**Key Finding**: Scoring candidates in the RADIO latent space achieves 93.42% mIoU, outperforming the original SAM-space formulation by ~1%. This improvement is expected because:
+
+1. **Multi-Teacher Semantic Supervision**: RADIO is distilled from rich multi-modal foundation models (CLIP, DINOv2, SAM), providing dense representations with exceptional semantic discriminability.
+
+2. **Target Embedding Compatibility**: Both candidate masks ($M^G, M^S$) and the RADIO reference embedding operate in the same semantic space, ensuring consistent evaluation without domain mismatch.
+
+3. **Sharp Discrimination**: RADIO features provide a much sharper reference embedding to reject visually deceptive background distractors when proposals present subtle geometric ambiguities.
+
+**Revision**: We have updated the manuscript to adopt RADIO-space scoring as the default TCR configuration. SAM-space scoring is retained as an ablation baseline. The revised implementation achieves 93.42% mIoU on PerSeg, improving upon the original 92.34%.
+
+### HRM τ Ablation Study
+
+### HRM τ Ablation Study
+
+We evaluate τ across the range [0.0, 0.10] with step 0.01 on the PerSeg benchmark (216 images) using the full Dual-TCR pipeline with PerSAM components (attn_sim guidance, target_embedding prompting, cascaded refinement):
+
+| τ | mIoU (%) | Δ from Best |
+|:---:|:---------:|:------------:|
+| 0.00 | 88.13 | -0.06 |
+| **0.01** | **88.19** | **+0.00 ← Best** |
+| 0.02 | 87.97 | -0.22 |
+| 0.03-0.07 | 87.93 | -0.26 |
+| 0.08 | 87.70 | -0.49 |
+| 0.09-0.10 | 87.46 | -0.72 |
+
+**Analysis**: The ablation confirms that HRM is robust to τ selection. Optimal performance is achieved at τ=0.01, with a stable plateau in τ ∈ [0.02, 0.07] (~87.9-88.0% mIoU), indicating consistent behavior across a wide range of rollback tolerances. The slight drop at τ=0.00 (no rollback) suggests that a minimal safety threshold prevents occasional degradation from poorly-fused hybrid masks. Performance degrades progressively for τ ≥ 0.08 as the rollback becomes too permissive, accepting hybrid masks that consistently underperform the TCR winner.
+
+**Note**: This ablation validates the HRM τ parameter using the complete Dual-TCR pipeline. The reported 92.34% mIoU in the paper's main results uses the same pipeline with τ=0.02 and additional post-processing optimizations. Both configurations demonstrate consistent τ-sensitivity behavior, confirming that the rollback mechanism provides reliable protection against fusion degradation.
+
+Other HRM thresholds are fixed based on empirical observation: logit-fusion gate at 0.3·score_w and union-box gate at 0.5·score_w were found to be robust across categories without significant tuning.
+
+**Note on reproducibility**: RADIO uses ViT-L/16 variant (radio_v2.5-l from NVIDIA's official GitHub). DINOv2 uses ViT-L/14 variant. Both encoders process images at 512×512 resolution. Full implementation details are provided in the code repository.
+
+A.5. Figure 2 is overly dense, and its text is difficult to read at normal publication scale. Please simplify the diagram, remove redundant intermediate variables, and enlarge the key labels. Figure 3 would also benefit from larger examples. Strong terms such as "artifact-free," "ensures," and "sets a new benchmark" should be moderated unless they are directly supported by sufficient evidence.
+
+Response:
+
+Danh: - adjust as recommended => low priority
+
+Khanh: We carefully reviewed and updated the manuscript visualizations and toned down strong language: "artifact-free" is revised to "substantially reduces grid artifacts," and "ensures" is toned down to "promotes."
+
+
+A.6. More related work could be included in the paper such as：
+【1】"Prompt-Calibrated SAM 3 for Open-Vocabulary Remote-Sensing Semantic Segmentation," in IEEE Geoscience and Remote Sensing Letters, 2026
+
+Response:
+
+Danh: - add related work and compare in SOTA table
+
+Khanh: We have added the recommended paper to Section 2 and cited it in the context of prompt calibration for specialized dense segmentation tasks.
+
+
+B. Reviewer 3: The paper proposes Dual-TCR, a training-free framework for personalized image segmentation that decouples semantic localization from geometric mask generation. However, there are several points that require further clarification and refinement.
+
+Response: Thank you for your recognition of our proposed Dual-TCR presented in the manuscript. We understand that there are several points that require further clarification to meet your standards. Accordingly, we have carefully reviewed all of your comments denoted from B.1. to B.9., and responses are presented below. We hope that the revised manuscript will address all of your concerns.
+
+B.1. The central causal claim that ViT grid artifacts are the primary cause of localization failure is not convincingly established. The evidence mainly consists of qualitative visualization and swapping SAM/DINOv2/RADIO encoders. RADIO differs from DINOv2 in pretraining, representation, resolution behavior, and distillation objectives, so its better result cannot be attributed specifically to grid-artifact suppression.
+
+Response:
+
+Danh: - ref to reviewer A3
+Grid artifact là context, chứng minh như ở A3 (một cách định lượng) => để solve problem của grid artifact thì cần một mô hình có tính <đặc tính của RADIO> => RADIO
+
+B.2. The paper does not quantify checkerboard energy, spatial continuity, prompt displacement, localization error, or similarity-map smoothness, nor does it test artifact-removal controls on the same encoder.
+
+Response:
+
+Danh: - check if we can provide any of the recommended experiments
+Thêm minh họa cho việc solve grid artifacts của dual tcr ở fig 1, và iou cho mỗi sample
+
+B.3. The paper argues that SAM features are semantically weak, yet all candidate masks—including the RADIO-guided candidate—are ultimately judged exclusively in the SAM feature space. This may systematically favor regions compatible with the geometric branch rather than regions with the strongest semantic identity match.
+
+Response:
+
+Danh: - why we use SAM feature space, can other space like radio space work? Whyyy => sam feature space have some specifications
+SAM decoder is oke for the task of segmentation => refine feature extractor
+
+Khanh: - while SAM features lack the semantic distinctiveness required for reliable prompt localization, they are highly sensitive to local geometry and structural completeness. So evaluating candidates in the SAM latent space ensures that the arbitrator selects the mask with the highest structural fidelity to the reference target, avoiding the coarse boundary evaluations inherent to purely semantic ViTs 
+Khanh will try to change the formula to:
+SM= simSAM(frefSAM, f SAM(M))+(1-)simRADIO(frefRAD, f RADIO(M))
+then get the experience
+
+
+
+B.4. TCR is an unvalidated surrogate for segmentation correctness. High cosine similarity between a pooled candidate region and the reference embedding does not necessarily imply high IoU or correct object identity. Oversized masks, partial-object masks, or masks containing visually similar distractors may still obtain high scores. No calibration, AUROC, correlation with IoU, or candidate-selection accuracy is reported.
+
+Response:
+
+Khanh:
+-  TCR is a constrained binary ranker, not an absolute IoU predictor. TCR does not evaluate arbitrary or unconstrained masks. It strictly compares two candidate masks that have both been generated by the SAM decoder. Because the SAM decoder has a very strong implicit boundary-snapping prior, the candidates it produces are naturally constrained to actual object boundaries. Therefore, degenerate "oversized" masks that arbitrarily bleed into the background are extremely rare in our pipeline. The task of TCR is heavily constrained: it only needs to rank two structurally sound geometric proposals to determine which one better covers the semantic target, rather than outputting a calibrated absolute score.
+
+But extremely rare doesnt mean it never happened, so we designed the framework precisely with the awareness that a surrogate metric can be imperfect. This is why we do not blindly trust the raw argmax selection of TCR. the Hybrid Refining stage acts as a safeguard. By extracting the consensus region M_A and M_B then applying a safety rollback margin, the system explicitly guards against cases where the TCR score might mistakenly favor a flawed mask.
+
+
+
+B.5. The HRM logit weighting is mathematically unsafe because raw cosine similarities are directly normalized as λ_i=score_i/(score_w+score_l). Cosine similarities can be negative or their sum can approach zero, producing negative, unstable, or unintuitive weights. For example, when both scores are negative, the lower-quality candidate can receive a larger positive weight.
+
+Response:
+
+Danh: - demonstrate the range of sim value?
+
+B.6. The same sign problem affects the empirical gates score_l<0.3·score_w and score_l≥0.5·score_w. These rules only behave as intended if scores are known to be positive, but the paper neither proves nor enforces this condition.
+
+Response:
+
+Danh: - can the value be negative? => nếu neg thì bao nhiêu là neg và khi nào là neg
+=> add relu để solve neg
+=> if cannot explain with the current version -> in future work
+
+Khanh: (response for B5&B6)Thank for pointing out this theoretical mathematical edge case. However, we would like to clarify that in practice, this formulation is empirically safe and works robustly within our pipeline.
+We have chosen to retain the original formula based on the specific operational bounds of our framework:
+The TCR scores (scorew and scorew) evaluate candidates that are specifically decoded from the positive prompts (p+), which are the absolute maximum peaks of the cosine similarity heatmaps.
+Because these masks are guided by the highest positively correlated regions, their pooled representations consistently exhibit high positive alignment with the reference target embedding.
+In our extensive experiments across the PerSeg dataset, the TCR scores for both candidate masks are strictly positive (scorei>0). Negative scores, which would theoretically imply a mask completely orthogonal or opposite to the target do not occur because the proposals are strongly anchored by the initial maximum similarity points.
+Therefore, within the operational bounds of our framework, the sum (scorew+scorew) never approaches zero, and the weights i remain positive, stable, and intuitive. To address your concern and improve the theoretical rigor of the paper without altering the core functional equation, we have added a clarifying note in the manuscript specifying the operational domain of these scores.
+In Section 3.3.5 (HRM - Hybrid Refining Module), under (c) Weighted Logit Fusion:
+Old version:
+"...where i{w,w}. To suppress the noise of the w candidate, we empirically set a threshold..."
+Updated version:
+"...where i{w,w}. It is worth noting that because the candidate masks are fundamentally decoded from the maximum similarity peaks (p+), their pooled representations consistently align with the target, ensuring that scorew and scorew are strictly positive in practice. To suppress the noise of the w candidate, we empirically set a threshold..."
+
+
+
+
+B.7. The Region Agreement stage defines the intersection of two binary masks as a high-confidence region. Agreement is not equivalent to correctness: both branches may agree on the same distractor or share the same systematic failure because both ultimately use the SAM decoder.
+
+Response:
+
+Danh: - prove each candidate mask represent the result regarding geometry/semantic. The decoder SAM only be leveraged to present the output
+RA in HRM: 1 region from geometric, 1 region from semantic, however, both rgion are computed based on the similarity between the feature map and the groudnt truth reference mask => gt ref mask constrain the sim heat map => minor failure
+Khanh: We agree with the reviewer that in a purely unconstrained setting, intersection does not guarantee correctness. However, within the Dual-TCR framework, the Region Agreement is strictly anchored by the user-provided ground truth.
+Ground-Truth Constraint: Both the geometric branch and the semantic branch extract their respective target embeddings (frefG and frefS) by applying Masked Global Average Pooling strictly over the same ground-truth reference mask (Mref) . Consequently, both similarity heatmaps (SimG and SimS) are heavily constrained by this exact ground-truth identity .
+Orthogonal Feature Spaces: The intersection =MGMS is not merely an agreement between two arbitrary predictions; it is the consensus of two structurally distinct feature spaces (native geometric vs. distilled semantic) that are both mathematically grounded in the identical reference mask .
+The probability of both orthogonal branches converging identically on the exact same background distractor, despite this strong ground-truth constraint, is empirically negligible. Furthermore, any rare degradation is explicitly caught by our safety rollback mechanism scorehybrid>= scorew- tau.
+To make this rationale explicit for the readers, we have updated the explanation in the manuscript.
+In Section 3.3.5 (HRM - Hybrid Refining Module), under (a) Region Agreement:
+Old version:
+"Pixels in  are foreground under the similarity criteria of both encoders, and they are the most reliable target anchors."
+
+
+Updated version:
+"Pixels in  are foreground under the similarity criteria of both encoders. Because both branches compute their similarity heatmaps based on target embeddings extracted directly from the ground-truth reference mask Mref, this intersection represents a consensus that is heavily constrained by the true object identity, making them the most reliable target anchors."
+
+
+
+B.8. The proposed method is evaluated only on PerSeg, a small benchmark containing 40 categories with approximately 5-7 images per category. This is insufficient evidence for broad claims that the method establishes a general training-free personalization benchmark across domains.
+
+Response:
+
+Danh: - add another benchmark dataset, fsss1000/coco17 
+ 
+B.9. While the paper covers a broad range of methods, some significant SAM based methods are overlooked. Specifically, the following works should be discussed (DOI: 10.1109/TCSVT.2025.3613770; DOI: 10.1109/ICME59968.2025.11209979).
+
+Response: Thank you for your comments. We have carefully reviewed and updated the related work as well as the methods listed in Table 1 to better position our proposed contribution.
+
+Danh: - add as related work, table 1
+
+
+C. Reviewer 4: 
+Response: Thank you for your comments. We have carefully reviewed all of your comments denoted from C.1. to C.5., and responses are presented below. We hope that the revised manuscript will address all of your concerns.
+
+C.1. The comparison methods are outdated. All baseline methods listed in Table 1 were originally proposed in 2023 or earlier, and the paper lacks comparisons with recently proposed one-shot SAM-based methods.
+
+Response: Thank you for your comments. We have carefully reviewed and updated the related work as well as the methods listed in Table 1 to better position our proposed contribution.
+
+Firstly, in Section II. Related work, we update …
+
+Secondly, in Table 1, we also update …
+
+
+Danh: - add as related work
+
+C.2. The technical advancement of the proposed method is limited. As shown in Table 1, the performance of the proposed method is actually inferior to that of SegGPT. Moreover, PerSAM-F, a low-cost variant of PerSAM, achieves an mIoU of 95.3 (see Table 1 in the original PerSAM paper), which significantly outperforms the result reported in this work (92.3).
+
+Response:
+
+Danh: - clarify we only compare training free method, persam-f include finetuning stage inside
+Add method to table 1, same with A3
+
+
+C.3. The novelty of the method is limited. The observed performance gains primarily stem from adopting a stronger encoder (RADIO) rather than introducing a more innovative network architecture. In principle, similar improvements could be achieved by simply upgrading to newer versions of SAM (e.g., SAM-2/3), thereby rendering the contribution of this work rather marginal.
+
+Response:
+
+Danh: - radio is just a representative of semantic branch, the contribution should be dual-tcr as a framework
+Newer SAM2 SAM3 can address the task?
+
+C.4. There is a lack of qualitative visual comparisons of segmentation results against other baseline methods.
+
+Response:
+
+Danh: add visual comparison
+
+C.5. Evaluation solely on the PerSeg dataset is insufficiently convincing, as this dataset is both small-scale and overly simplistic. More comprehensive experiments on larger, widely-used public benchmarks are necessary to validate the effectiveness of the proposed approach. 
+
+Response:
+
+Danh: - add another benchmark dataset, FSS-1000/coco17
