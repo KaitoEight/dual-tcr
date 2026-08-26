@@ -1,6 +1,5 @@
 # Dual-TCR: Dual-Branch Target Consistency Representation for Training-Free Personalized Segmentation
 
-[![PWC](https://img.shields.io/badge/Personalized%20Segmentation-93.42%25%20mIoU-green)](https://paperswithcode.com)
 
 Official implementation of **Dual-TCR: A Dual-Branch Target Consistency Representation for Training-Free Personalized Image Segmentation**.
 
@@ -10,23 +9,18 @@ We propose **Dual-TCR**, a training-free framework for personalized image segmen
 
 ## Key Features
 
-- **🎯 Training-Free**: No fine-tuning required - ready to use with a single reference mask
-- **⚡ Fast**: Inference in seconds with pre-trained models
-- **🔀 Dual-Branch Architecture**: Combines SAM (geometric) + RADIO (semantic)
-- **🏆 State-of-the-Art**: 93.42% mIoU on PerSeg benchmark
+- ** Training-Free**: No fine-tuning required - ready to use with a single reference mask
+- ** Fast**: Inference in seconds with pre-trained models
+- ** Dual-Branch Architecture**: Combines geometric + semantic
+- ** State-of-the-Art**: 93.42% mIoU on PerSeg benchmark
 
-## News
-* **NEW**: RADIO-space scoring achieves **93.42% mIoU** (vs 92.34% baseline)
-* **NEW**: Ablation experiments for scoring space comparison
-* **NEW**: τ parameter analysis for Hybrid Refining Module
-* Release Dual-TCR implementation with dual scoring configurations
 
 ## Method Overview
 
 Dual-TCR introduces a dual-branch architecture:
 
-1. **Geometric Branch (SAM)**: Uses native SAM features for boundary-accurate mask generation
-2. **Semantic Branch (RADIO)**: Leverages multi-teacher distilled features for robust object localization
+1. **Geometric Branch **: Uses native SAM features for boundary-accurate mask generation
+2. **Semantic Branch **: Leverages multi-teacher distilled features for robust object localization
 3. **Target Consistency Representation (TCR)**: Arbitrates between branches based on feature consistency
 4. **Hybrid Refining Module (HRM)**: Fuses masks using region agreement and weighted logit fusion
 
@@ -162,18 +156,8 @@ Personalize-SAM/
 └── data/                        # PerSeg dataset (download separately)
 ```
 
-## Citation
 
-```bibtex
-@article{dual_tcr_2024,
-  title={Dual-TCR: A Dual-Branch Target Consistency Representation for Training-Free Personalized Image Segmentation},
-  author={Le Minh Khanh and Dong Van Nguyen and others},
-  journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
-  year={2024}
-}
-```
 
-*Note: Please update with complete author list and correct journal/conference name.*
 
 ## Acknowledgements
 
