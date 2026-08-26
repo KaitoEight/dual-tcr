@@ -1,5 +1,7 @@
 # Dual-TCR: Dual-Branch Target Consistency Representation for Training-Free Personalized Segmentation
 
+[![PWC](https://img.shields.io/badge/Personalized%20Segmentation-93.42%25%20mIoU-green)](https://paperswithcode.com)
+
 Official implementation of **Dual-TCR: A Dual-Branch Target Consistency Representation for Training-Free Personalized Image Segmentation**.
 
 ## Abstract
@@ -8,14 +10,15 @@ We propose **Dual-TCR**, a training-free framework for personalized image segmen
 
 ## Key Features
 
-- **Training-Free**: No fine-tuning required - ready to use with a single reference mask
-- **Fast**: Inference in seconds with pre-trained models
-- **Dual-Branch Architecture**: Combines SAM (geometric) + RADIO (semantic)
-- **State-of-the-Art**: 93.42% mIoU on PerSeg benchmark
+- **🎯 Training-Free**: No fine-tuning required - ready to use with a single reference mask
+- **⚡ Fast**: Inference in seconds with pre-trained models
+- **🔀 Dual-Branch Architecture**: Combines SAM (geometric) + RADIO (semantic)
+- **🏆 State-of-the-Art**: 93.42% mIoU on PerSeg benchmark
 
 ## News
 * **NEW**: RADIO-space scoring achieves **93.42% mIoU** (vs 92.34% baseline)
 * **NEW**: Ablation experiments for scoring space comparison
+* **NEW**: τ parameter analysis for Hybrid Refining Module
 * Release Dual-TCR implementation with dual scoring configurations
 
 ## Method Overview
@@ -60,8 +63,8 @@ We provide two scoring configurations:
 ### Installation
 
 ```bash
-git clone https://github.com/KaitoEight/dual-tcr.git
-cd dual-tcr
+git clone https://github.com/KaitoEight/Personalize-SAM.git
+cd Personalize-SAM
 
 conda create -n dual_tcr python=3.8
 conda activate dual_tcr
@@ -119,7 +122,7 @@ python eval_miou.py --pred_path outputs/radio_scoring
 |--------|-------------|----------|
 | PerSAM (Original) | ✅ | 89.16 |
 | PerSAM-F | ❌ | 95.30 |
-| **Dual-TCR (SAM-space)** | ✅ | **92.34** |
+| **Dual-TCR (SAM-space)** | ✅ | **92.43** |
 | **Dual-TCR (RADIO-space)** | ✅ | **93.42** |
 
 ### Ablation Studies
@@ -130,31 +133,34 @@ python eval_miou.py --pred_path outputs/radio_scoring
 |---------------|----------|-------|
 | RADIO-space | **93.42** | Best - multi-teacher semantic |
 | DUAL-space | 92.46 | 50% SAM + 50% RADIO |
-| SAM-space | 92.34 | Decoder-aligned evaluation |
+| SAM-space | 92.43 | Decoder-aligned evaluation |
+
+#### τ Parameter Analysis (HRM)
+
+| τ | mIoU (%) |
+|---|----------|
+| 0.00 | 88.13 |
+| **0.01** | **88.19** |
+| 0.02 | 87.97 |
+| 0.05 | 87.93 |
 
 ## Repository Structure
 
 ```
-dual-tcr/
+Personalize-SAM/
 ├── dual_tcr_perseg_radio.py      # RADIO-space scoring (93.42%)
 ├── dual_tcr_perseg_sam.py        # SAM-space scoring (92.43%)
 ├── eval_miou.py                  # mIoU evaluation
 ├── per_segment_anything/          # Modified SAM implementation
 │   ├── predictor.py              # Custom predictor with attn_sim
 │   └── modeling/                # Mask decoder modifications
-├── ablation_experiments/          # Ablation study scripts
+├── ablation_experiments/         # Ablation study scripts
 │   ├── eval_prompt_localization.py
+│   ├── ablation_tau_v7tcr.py
 │   ├── ablation_scoring_space_full.py
 │   └── RevisionLetter            # Response to reviewers
 └── data/                        # PerSeg dataset (download separately)
 ```
-
-## Acknowledgements
-
-This work builds upon:
-- [Segment Anything Model (SAM)](https://github.com/facebookresearch/segment-anything)
-- [NVIDIA RADIO](https://github.com/NVlabs/RADIO)
-- [PerSAM](https://github.com/ZrrSkywalker/Personalize-SAM)
 
 ## Citation
 
@@ -166,6 +172,15 @@ This work builds upon:
   year={2024}
 }
 ```
+
+*Note: Please update with complete author list and correct journal/conference name.*
+
+## Acknowledgements
+
+This work builds upon:
+- [Segment Anything Model (SAM)](https://github.com/facebookresearch/segment-anything)
+- [NVIDIA RADIO](https://github.com/NVlabs/RADIO)
+- [PerSAM](https://github.com/ZrrSkywalker/Personalize-SAM)
 
 ## Contact
 
