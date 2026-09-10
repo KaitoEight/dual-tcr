@@ -50,7 +50,7 @@ We provide two scoring configurations:
 | Configuration | Scoring Space | mIoU | Description |
 |---------------|--------------|------|-------------|
 | `dual_tcr_perseg_radio.py` | RADIO-space | **93.42%** | Multi-teacher semantic supervision (Recommended) |
-| `dual_tcr_perseg_sam.py` | SAM-space | 92.43% | Decoder-aligned evaluation |
+| `dual_tcr_perseg_sam.py` | SAM-space | 92.34% | Decoder-aligned evaluation |
 
 ## Requirements
 
@@ -116,7 +116,7 @@ python eval_miou.py --pred_path outputs/radio_scoring
 |--------|-------------|----------|
 | PerSAM (Original) | ✅ | 89.16 |
 | PerSAM-F | ❌ | 95.30 |
-| **Dual-TCR (SAM-space)** | ✅ | **92.43** |
+| **Dual-TCR (SAM-space)** | ✅ | **92.34** |
 | **Dual-TCR (RADIO-space)** | ✅ | **93.42** |
 
 ### Ablation Studies
@@ -127,7 +127,7 @@ python eval_miou.py --pred_path outputs/radio_scoring
 |---------------|----------|-------|
 | RADIO-space | **93.42** | Best - multi-teacher semantic |
 | DUAL-space | 92.46 | 50% SAM + 50% RADIO |
-| SAM-space | 92.43 | Decoder-aligned evaluation |
+| SAM-space | 92.34 | Decoder-aligned evaluation |
 
 #### τ Parameter Analysis (HRM)
 
@@ -143,7 +143,7 @@ python eval_miou.py --pred_path outputs/radio_scoring
 ```
 Personalize-SAM/
 ├── dual_tcr_perseg_radio.py      # RADIO-space scoring (93.42%)
-├── dual_tcr_perseg_sam.py        # SAM-space scoring (92.43%)
+├── dual_tcr_perseg_sam.py        # SAM-space scoring (92.34%)
 ├── eval_miou.py                  # mIoU evaluation
 ├── per_segment_anything/          # Modified SAM implementation
 │   ├── predictor.py              # Custom predictor with attn_sim
